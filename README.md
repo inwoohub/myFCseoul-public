@@ -42,10 +42,12 @@
 
 ### 시스템 아키텍처
 
+<img width="1280" height="720" alt="Image" src="https://github.com/user-attachments/assets/150a6ccf-f6ac-45a7-94d1-974f16f0c550" />
 <br>
 
 ### DB 설계 (ERD)
 
+<img width="3360" height="2689" alt="Image" src="https://github.com/user-attachments/assets/729863a4-263b-490a-9ca9-3d57c8990360" />
 <br>
 
 ### 프로젝트 구조
