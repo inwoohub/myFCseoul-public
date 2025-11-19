@@ -32,15 +32,13 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     @Override
     @Transactional
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        logger.info("CustomOAuth2UserService.loadUser 호출됨.");
+
         OAuth2User oauth2User = super.loadUser(userRequest);
 
         Map<String, Object> attributes = oauth2User.getAttributes();
-        logger.info("Kakao attributes: {}", attributes);
 
         // Kakao API 응답에서 "id"가 카카오 사용자의 고유 ID입니다.
         String kakaoId = String.valueOf(attributes.get("id"));
-        logger.info("Extracted kakaoId: {}", kakaoId);
 
         // "kakao_account"에서 추가 정보를 추출 (이메일은 사용하지 않음)
         Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
@@ -50,7 +48,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String nickname = (profile != null && profile.get("nickname") != null)
                 ? (String) profile.get("nickname")
                 : "Unknown";
-        logger.info("Extracted nickname: {}", nickname);
 
         // DB에서 카카오 고유 ID(userId)로 사용자 조회, 없으면 새로 생성합니다.
         User user = userRepository.findByUserId(kakaoId)
@@ -69,7 +66,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             user.setNickname(nickname);
         }
 
-        // ★★ 핵심: DB role 값을 그대로 권한으로 부여 ("admin" / "user")
+        // DB role 값을 그대로 권한으로 부여 ("admin" / "user")
         Collection<? extends GrantedAuthority> authorities =
                 List.of(new SimpleGrantedAuthority(user.getRole()));
 
@@ -80,10 +77,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 "id"
         );
 
-        logger.info("저장하기 전 User 정보: userId={}, nickname={}, role={}", user.getUserId(), user.getNickname(), user.getRole());
         userRepository.save(user);
-        logger.info("사용자 저장 완료.");
-        logger.info("로그인 사용자 권한: {}", principal.getAuthorities());
 
         return principal;
     }
