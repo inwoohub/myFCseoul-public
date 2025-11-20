@@ -262,7 +262,7 @@ OpenAI API를 활용하여 하루 1회 텍스트 형태의 상세 예측 리포�
 ---
 
 ### **직관 등록**
-<img width="804" height="576" alt="Image" src="https://github.com/user-attachments/assets/87f1835d-ab45-4655-922c-192f981c53e3" />
+<img width="800" height="436" alt="Image" src="https://github.com/user-attachments/assets/66f27f0b-d777-46ad-aee0-ed064904a34b" />
 <br>
 
 ---
