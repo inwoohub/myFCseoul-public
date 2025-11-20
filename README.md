@@ -24,7 +24,7 @@
 
 
 
-### 🎯 개발 목적
+### 1-1. 개발 목적
 
 - 프로축구팀을 응원하러 가는 FC서울 팬들이
     - 자신의 직관 기록(언제, 어떤 경기) 을 남기고
@@ -35,32 +35,32 @@
 
 ## 2. ⚒️ 사용 기술
 
-### Backend
+### 2-1. Backend
 <img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=OpenJDK&logoColor=white"> <img src="https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=Spring&logoColor=white"> <img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"> <img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=MySQL&logoColor=white"> <img src="https://img.shields.io/badge/Hibernate-59666C?style=for-the-badge&logo=Hibernate&logoColor=white"> <img src="https://img.shields.io/badge/chatGPT-74aa9c?style=for-the-badge&logo=openai&logoColor=white"> <img src="https://img.shields.io/badge/-selenium-%43B02A?style=for-the-badge&logo=selenium&logoColor=white">
 
 
-### Frontend
+### 2-2. Frontend
 <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=JavaScript&logoColor=white"> <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=HTML5&logoColor=white"> <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=CSS3&logoColor=white"> <img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=React&logoColor=white">
 
 
-### Infra & DevOps
+### 2-3. Infra & DevOps
 <img src="https://img.shields.io/badge/Amazon%20RDS-1f77b4?style=for-the-badge&logo=Amazon%20EC2&logoColor=white"> <img src="https://img.shields.io/badge/Amazon%20EC2-FF9900?style=for-the-badge&logo=Amazon%20EC2&logoColor=white"> <img src="https://img.shields.io/badge/Amazon%20S3-569A31?style=for-the-badge&logo=Amazon%20S3&logoColor=white"> <img src="https://img.shields.io/badge/nginx-%23009639.svg?style=for-the-badge&logo=nginx&logoColor=white"> <img src="https://img.shields.io/badge/docker-%230db7ed?style=for-the-badge&logo=docker&logoColor=white"> <img src="https://img.shields.io/badge/Cloudflare-F38020?style=for-the-badge&logo=Cloudflare&logoColor=white"> 
 
 <br>
 
 ## 3. 🌐 아키텍처
 
-### 시스템 아키텍처
+### 3-1. 시스템 아키텍처
 
 <img width="1280" height="720" alt="Image" src="https://github.com/user-attachments/assets/150a6ccf-f6ac-45a7-94d1-974f16f0c550" />
 <br>
 
-### DB 설계 (ERD)
+### 3-2. DB 설계 (ERD)
 
 <img width="3360" height="2689" alt="Image" src="https://github.com/user-attachments/assets/729863a4-263b-490a-9ca9-3d57c8990360" />
 <br>
 
-### 프로젝트 구조
+### 3-3. 프로젝트 구조
 
 <details>
 <summary>프로젝트 구조 펼쳐보기</summary>
@@ -136,45 +136,45 @@
 카카오 OAuth 2.0을 통해 간편하게 로그인할 수 있는 화면<br>
 
 ---
-### **메인 화면**
+### 4-1. **메인 화면**
 <img width="2438" height="2222" alt="Image" src="https://github.com/user-attachments/assets/13adbb0f-800f-4c8e-a737-eb79211e59ee" />
 <br>
 경기 일정, 나의 직관 성적, 랭킹을 한눈에 볼 수 있는 대시보드 화면<br>
 
 ---
-### **직관 등록 화면**
+### 4-2. **직관 등록 화면**
 <img width="1453" height="1179" alt="Image" src="https://github.com/user-attachments/assets/7a93dc28-2d29-43e9-8a93-55f333676366" />
 <br>
 관람한 경기의 티켓·예매 내역 사진을 업로드하여 직관을 등록할 수 있는 화면  
 등록된 직관 정보는 출석 통계 및 승률 분석, 랭킹 산정에 활용<br>
 
 ---
-### **다이어리 화면**
+### 4-3. **다이어리 화면**
 <img width="2408" height="2672" alt="Image" src="https://github.com/user-attachments/assets/09e14743-586c-48f8-93d3-ad85ecb36539" />
 <br>
 경기 관람 소감과 일상을 텍스트와 사진으로 기록할 수 있는 개인 다이어리 화면<br>
 
 ---
-### **AI 경기 예측 화면**
+### 4-4. **AI 경기 예측 화면**
 <img width="5623" height="2964" alt="Image" src="https://github.com/user-attachments/assets/02df5148-01a6-4edf-9d8f-6b515ab33343" />
 <br>
 K리그 순위, 상대 팀 전적, 나의 직관 기록을 기반으로 다음 경기 결과를 예측해 주는 화면
 OpenAI API를 활용하여 하루 1회 텍스트 형태의 상세 예측 리포트를 제공<br>
 
 ---
-### **채팅 화면**
+### 4-5. **채팅 화면**
 <img width="1469" height="740" alt="Image" src="https://github.com/user-attachments/assets/979db278-a3d0-4ac6-95ec-0ff4c5f1feec" />
 <br>
 다른 사용자와 1:1로 대화하며 직관 후기와 응원 메시지를 나눌 수 있는 채팅 화면<br>
 
 ---
-### **프로필 화면**
+### 4-6. **프로필 화면**
 <img width="1453" height="736" alt="Image" src="https://github.com/user-attachments/assets/73ea814e-0550-4b09-ba31-67fa13ecf454" />
 <br>
 로그아웃 및 닉네임 변경 가능한 화면<br>
 
 ---
-### **관리자 출석 인증 화면**
+### 4-7. **관리자 출석 인증 화면**
 <img width="1453" height="736" alt="Image" src="https://github.com/user-attachments/assets/37478a2d-18b3-400f-acbb-af1a3295cc81" />
 <br>
 사용자가 제출한 직관 인증 사진을 관리자 계정이 승인·거절할 수 있는 화면
@@ -182,7 +182,7 @@ OpenAI API를 활용하여 하루 1회 텍스트 형태의 상세 예측 리포�
 
 
 ---
-### **모바일 화면**
+### 4-8. **모바일 화면**
 <img width="3617" height="5152" alt="Image" src="https://github.com/user-attachments/assets/e32b1c10-59df-4ff8-9e23-6ab6873cb3c4" />
 <br>
 모바일 환경도 고려하여 반응형 레이아웃을 구성<br>
@@ -191,13 +191,13 @@ OpenAI API를 활용하여 하루 1회 텍스트 형태의 상세 예측 리포�
 <br>
 
 ## 5. 📌 주요 기능 설계
-### **Kakao 소셜 로그인 (OAuth 2.0) 기능**
+### 5-1. **Kakao 소셜 로그인 (OAuth 2.0) 기능**
 <img width="805" height="440" alt="Image" src="https://github.com/user-attachments/assets/9bf370bb-22aa-4dff-8c1f-dbf28a55b0f7" />
 <br>
 카카오 OAuth 2.0 기반 소셜 로그인을 통해 사용자를 인증합니다.  
 직접 회원가입/비밀번호 관리 없이, 카카오 계정으로만 서비스에 접근할 수 있도록 설계했습니다.
 
-#### 🔐 인증 / 인가 흐름
+#### 인증 / 인가 흐름
 
 1. **사용자 요청**
     - 클라이언트에서 “카카오 로그인” 버튼 클릭
@@ -246,7 +246,7 @@ OpenAI API를 활용하여 하루 1회 텍스트 형태의 상세 예측 리포�
 
 ---
 
-### **직관 기록 기능**
+### 5-2. **직관 기록 기능**
 <img width="800" height="436" alt="Image" src="https://github.com/user-attachments/assets/66f27f0b-d777-46ad-aee0-ed064904a34b" />
 <br>
 세션 기반 인증( `JSESSIONID` )과 Spring Data JPA를 이용해  
@@ -293,25 +293,25 @@ OpenAI API를 활용하여 하루 1회 텍스트 형태의 상세 예측 리포�
 
 ---
 
-### **다이어리 기능**
+### 5-3. **다이어리 기능**
 
 <br>
 
 ---
 
-### **AI 경기 예측 기능**
+### 5-4. **AI 경기 예측 기능**
 
 <br>
 
 ---
 
-### **채팅 기능**
+### 5-5. **채팅 기능**
 
 <br>
 
 ---
 
-### **랭킹 기능**
+### 5-6. **랭킹 기능**
 
 <br>
 
