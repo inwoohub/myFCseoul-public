@@ -197,20 +197,6 @@ OpenAI API를 활용하여 하루 1회 텍스트 형태의 상세 예측 리포�
 카카오 OAuth 2.0 기반 소셜 로그인을 통해 사용자를 인증합니다.  
 직접 회원가입/비밀번호 관리 없이, 카카오 계정으로만 서비스에 접근할 수 있도록 설계했습니다.
 
-#### ⚒️ 사용 기술 / 핵심 컴포넌트
-- Spring Security OAuth2 Client
-- Kakao OAuth 2.0 API
-- JPA / MySQL `User` 엔티티
-    - `userId` : 카카오 고유 ID (PK)
-    - `nickname` : 서비스 내 표시 이름
-    - `role` : 권한 정보 (`user`, `admin`)
-    - `createdAt`, `lastNicknameUpdate`, `lastPredictionAt` 등 메타데이터
-- 주요 클래스
-    - `SecurityConfig` : OAuth2 로그인, 인가 정책 설정
-    - `CustomOAuth2UserService` : 카카오 유저 정보 조회 + `User` 엔티티 저장/업데이트
-    - `CustomOAuth2AuthenticationSuccessHandler` : 로그인 성공 후 리다이렉트 처리
-    - `UserRepository` : 사용자 조회/랭킹 조회용 JPA 리포지토리
-
 #### 🔐 인증 / 인가 흐름
 
 1. **사용자 요청**
@@ -250,7 +236,6 @@ OpenAI API를 활용하여 하루 1회 텍스트 형태의 상세 예측 리포�
         - `/api/rankings`, `/api/schedule` : 인증 없이 허용
         - 그 외 대부분의 API : 인증 필수
 
-이 구조를 통해  **세션 기반 인증**, **권한(role) 기반 인가**를 설계했습니다.
 ### 관련 소스 코드
 
 - [SecurityConfig.java](backend/src/main/java/com/myfcseoul/backend/config/SecurityConfig.java)
@@ -264,6 +249,47 @@ OpenAI API를 활용하여 하루 1회 텍스트 형태의 상세 예측 리포�
 ### **직관 등록**
 <img width="800" height="436" alt="Image" src="https://github.com/user-attachments/assets/66f27f0b-d777-46ad-aee0-ed064904a34b" />
 <br>
+세션 기반 인증( `JSESSIONID` )과 Spring Data JPA를 이용해  
+경기별 직관 사진을 제출하고, 나의 출석 내역을 조회할 수 있도록 설계했습니다.  
+
+#### 📡 API 흐름
+
+1. **출석 사진 제출 – `POST /api/mydata/submit`**
+   - Request Body (JSON)
+     ```json
+     {
+       "scheduleId": 3,
+       "photoKey": "s3/attendance/2025-04-01-xxxx.jpg"
+     }
+     ```
+   - 처리 과정
+     - `Principal` 에서 카카오 고유 ID를 꺼내 `UserRepository.findByUserId(...)` 로 `User` 조회  
+     - `scheduleId` 로 `ScheduleRepository.findById(...)` 호출  
+     - `(user, schedule)` 조합으로 `MyDataRepository.findByUserAndSchedule(...)` 조회  
+       - 이미 존재하면 해당 레코드 업데이트  
+       - 없으면 새로운 `MyData` 엔티티 생성
+     - `photoKey` 세팅, `attended = 0`(승인 대기) 로 상태 저장
+   - 응답
+     - `{ "message": "출석 사진이 제출되었습니다. 승인 대기 중입니다." }`
+
+2. **나의 출석 내역 조회 – `GET /api/mydata`**
+   - 처리 과정
+     - `Principal` 로 현재 로그인 사용자의 `userId` 확인  
+     - `UserRepository.findByUserId(...)` 로 `User` 엔티티 조회  
+     - `MyDataRepository.findByUser(user)` 로 해당 사용자의 모든 출석 데이터 조회
+   - 응답
+     - `MyData` 리스트(JSON)  
+       - 각 항목에 `attended`(0/1/2), `schedule`(경기 정보), `photoKey` 포함  
+       - 프론트에서 직관 히스토리/출석 현황/그래프 등에 활용
+
+### 관련 소스 코드
+
+- [MyDataController.java](backend/src/main/java/com/myfcseoul/backend/controller/MyDataController.java)
+- [AdminMyDataController.java](backend/src/main/java/com/myfcseoul/backend/controller/AdminMyDataController.java)
+- [MyDataRepository.java](backend/src/main/java/com/myfcseoul/backend/repository/MyDataRepository.java)
+- [ScheduleRepository.java](backend/src/main/java/com/myfcseoul/backend/repository/ScheduleRepository.java)
+
+
 
 ---
 
