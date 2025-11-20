@@ -246,7 +246,7 @@ OpenAI API를 활용하여 하루 1회 텍스트 형태의 상세 예측 리포�
 
 ---
 
-### **직관 등록**
+### **직관 기록 기능**
 <img width="800" height="436" alt="Image" src="https://github.com/user-attachments/assets/66f27f0b-d777-46ad-aee0-ed064904a34b" />
 <br>
 세션 기반 인증( `JSESSIONID` )과 Spring Data JPA를 이용해  
