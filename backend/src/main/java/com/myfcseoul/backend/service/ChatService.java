@@ -55,4 +55,5 @@ public class ChatService {
     public List<ChatMessage> getHistory(Long roomId) {
         return msgRepo.findByRoomRoomIdOrderBySentAtAsc(roomId);
     }
+
 }

@@ -486,7 +486,196 @@ OpenAI API를 활용하여 하루 1회 텍스트 형태의 상세 예측 리포�
 
 ### 5-5. **채팅 기능**
 
+<img width="841" height="155" alt="Image" src="https://github.com/user-attachments/assets/fb8501b5-40c1-4201-94b6-e0df9db97dad" />
+
+<img width="856" height="441" alt="Image" src="https://github.com/user-attachments/assets/48be8a28-6ed9-4923-a81a-a662d399613a" />
 <br>
+Spring WebSocket + STOMP 기반의 실시간 통신으로<br>
+DM 방 생성, 저장, 조회까지 모두 서버에서 관리하며 사용자는 다른 유저와 실시간으로 메시지를 주고받을 수 있습니다.
+<br>
+
+#### API 설계
+
+1. **채팅방 생성/조회 – `GET /api/chat/room?senderId=...&receiverId=...`**
+
+    - **요청 파라미터**
+        - `senderId` : 채팅을 시작하는 사용자 ID (카카오 고유 ID)
+        - `receiverId` : 상대 사용자 ID
+
+    - **처리 과정**
+        1. `ChatService.getOrCreateRoom(senderId, receiverId)` 호출  
+           → 내부에서 `ChatRoomRepository.findByUsers(senderId, receiverId)` 실행  
+           → (user1=A, user2=B) 또는 (user1=B, user2=A) 조합으로 **기존 방이 있는지 조회**
+        2. 기존 방이 없다면
+            - `UserRepository.findById(senderId)`
+            - `UserRepository.findById(receiverId)`  
+              로 두 사용자 엔티티를 조회하고
+            - `ChatRoom(user1, user2)` 엔티티를 생성하여 DB에 저장
+        3. 최종적으로 `roomId` 를 JSON으로 반환
+
+    - **응답 예시**
+      ```json
+      {
+        "roomId": 12
+      }
+      ```
+
+2. **채팅 히스토리 조회 – `GET /api/chat/{roomId}`**
+
+    - **요청 경로 변수**
+        - `roomId` : 채팅방 ID
+
+    - **처리 과정**
+        1. `ChatService.getHistory(roomId)` 호출  
+           → `ChatMessageRepository.findByRoomRoomIdOrderBySentAtAsc(roomId)` 실행  
+           → 해당 방의 메시지를 **전송 시각 오름차순**으로 조회
+        2. 각 `ChatMessage` 엔티티를 `ChatMessageDTO` 로 변환
+            - `roomId`, `senderId`, `content`, `senderNickname`, `sentAt` 등을 매핑
+        3. DTO 리스트를 JSON 배열로 반환
+
+    - **응답 예시**
+      ```json
+      [
+        {
+          "roomId": 12,
+          "senderId": "123456",
+          "receiverId": null,
+          "content": "안녕하세요!",
+          "senderNickname": "FC서울팬1",
+          "sentAt": "2025-05-20 19:11:23.123"
+        },
+        {
+          "roomId": 12,
+          "senderId": "654321",
+          "receiverId": null,
+          "content": "반가워요!",
+          "senderNickname": "FC서울팬2",
+          "sentAt": "2025-05-20 19:11:30.456"
+        }
+      ]
+      ```
+
+3. **실시간 1:1 DM 전송 – WebSocket `/ws-chat` + STOMP `/app/chat/private`**
+
+    - **WebSocket/STOMP 연결**
+        - 클라이언트는 SockJS + STOMP 클라이언트로  
+          `ws://<서버>/ws-chat` 엔드포인트에 Handshake 요청
+        - 서버 설정 (`WebSocketConfig`)
+          ```java
+          registry.addEndpoint("/ws-chat")
+                  .setAllowedOriginPatterns("*")
+                  .withSockJS();
+   
+          registry.setApplicationDestinationPrefixes("/app");
+          registry.enableSimpleBroker("/queue");
+          ```
+
+    - **클라이언트 → 서버 (메시지 전송)**
+        - 클라이언트는 `/app/chat/private` 목적지로 STOMP SEND:
+          ```json
+          {
+            "roomId": 12,
+            "senderId": "123456",
+            "receiverId": "654321",
+            "content": "안녕!"
+          }
+          ```
+        - 이 메시지는 서버의
+          ```java
+          @MessageMapping("/chat/private")
+          public void handlePrivateMessage(@Payload ChatMessageDTO dto) { ... }
+          ```
+          메서드로 매핑된다.
+
+    - **서버 내부 처리**
+        1. DTO 유효성 검사 (senderId/receiverId/content null·공백 체크)
+        2. `ChatService.getOrCreateRoom(senderId, receiverId)` 로 방 조회/생성
+        3. `ChatService.saveMessage(roomId, senderId, content)` 호출  
+           → `ChatRoomRepository.findById(roomId)` + `UserRepository.findById(senderId)`로 엔티티 조회  
+           → `ChatMessage` 엔티티 생성 후 `ChatMessageRepository.saveAndFlush(...)` 로 DB에 저장
+        4. 응답용 DTO에 `roomId`, `senderNickname`, `sentAt` 등을 세팅
+
+    - **서버 → 클라이언트 (메시지 푸시)**
+        - 저장 후, 수신자에게 WebSocket으로 실시간 전달:
+          ```java
+          messagingTemplate.convertAndSendToUser(
+              dto.getReceiverId(),
+              "/queue/messages",
+              dto
+          );
+          ```
+        - 실제 목적지: `/user/{receiverId}/queue/messages`
+        - 클라이언트는 다음과 같이 구독:
+          ```js
+          stompClient.subscribe('/user/queue/messages', onMessage);
+          ```
+        - 수신자는 **자신에게 도착한 메시지만** 실시간으로 전달받아 채팅창에 렌더링한다.
+
+---
+
+#### 내부 동작 구성
+
+1. **WebSocket/STOMP 설정 – `WebSocketConfig`**
+    - `@EnableWebSocketMessageBroker` + `WebSocketMessageBrokerConfigurer` 로 STOMP 메시지 브로커 활성화
+    - `/ws-chat` 엔드포인트를 SockJS 기반 WebSocket 엔드포인트로 등록
+    - 클라이언트 발신 경로 prefix: `/app`  
+      → `/app/chat/private` → `@MessageMapping("/chat/private")` 로 매핑
+    - 서버 발신 경로 prefix: `/queue`  
+      → `convertAndSendToUser(userId, "/queue/messages", ...)` 호출 시  
+      실제 목적지 `/user/{userId}/queue/messages` 로 라우팅
+
+2. **채팅 도메인 모델 – `ChatRoom`, `ChatMessage`, `ChatMessageDTO`**
+    - `ChatRoom`
+        - `roomId` (PK, auto increment)
+        - `user1`, `user2` (`User` 엔티티와 `@ManyToOne`)
+        - `createdAt` (`@PrePersist` 로 생성 시각 자동 세팅)
+    - `ChatMessage`
+        - `messageId` (PK)
+        - `room` (`ChatRoom` 과 `@ManyToOne`)
+        - `sender` (`User` 와 `@ManyToOne`)
+        - `content` (TEXT)
+        - `sentAt` (`@PrePersist` 로 전송 시각 자동 세팅)
+    - `ChatMessageDTO`
+        - WebSocket/REST 입·출력용 DTO
+        - `roomId`, `senderId`, `receiverId`, `content`, `senderNickname`, `sentAt` 필드를 포함
+
+3. **비즈니스 로직 – `ChatService`**
+    - `getOrCreateRoom(String senderId, String receiverId)`
+        - `ChatRoomRepository.findByUsers(senderId, receiverId)`  
+          로 두 유저 간 기존 방을 조회
+        - 없으면 `UserRepository` 로 유저 엔티티 조회 후 새 `ChatRoom` 생성 및 저장
+        - 트랜잭션(`@Transactional`)으로 방 생성 과정 전체를 하나의 단위로 보장
+    - `saveMessage(Long roomId, String senderId, String content)`
+        - `ChatRoomRepository.findById(roomId)` 로 방 존재 여부 확인
+        - `UserRepository.findById(senderId)` 로 발신자 조회
+        - `ChatMessage` 엔티티를 생성하여 `ChatMessageRepository.saveAndFlush(...)` 로 저장
+    - `getHistory(Long roomId)`
+        - `ChatMessageRepository.findByRoomRoomIdOrderBySentAtAsc(roomId)` 로  
+          방 내 메시지 히스토리를 시간순으로 조회 (`@Transactional(readOnly = true)`)
+
+4. **컨트롤러 계층 – `ChatRoomController`, `ChatController`**
+    - `ChatRoomController`
+        - `GET /api/chat/room`  
+          → 두 사용자(senderId, receiverId) 간 DM 방을 조회하거나 없으면 생성  
+          → `{"roomId": <Long>}` 형태로 응답
+    - `ChatController`
+        - `@MessageMapping("/chat/private")`  
+          → WebSocket/STOMP 기반 실시간 DM 수신, 검증, 저장, 푸시 담당
+        - `GET /api/chat/{roomId}`  
+          → 특정 방의 과거 메시지 히스토리를 REST API로 제공
+
+---
+
+#### 관련 소스 코드
+
+- [WebSocketConfig.java](backend/src/main/java/com/myfcseoul/backend/config/WebSocketConfig.java)
+- [ChatController.java](backend/src/main/java/com/myfcseoul/backend/controller/ChatController.java)
+- [ChatRoomController.java](backend/src/main/java/com/myfcseoul/backend/controller/ChatRoomController.java)
+- [ChatService.java](backend/src/main/java/com/myfcseoul/backend/service/ChatService.java)
+- [ChatRoomRepository.java](backend/src/main/java/com/myfcseoul/backend/repository/ChatRoomRepository.java)
+- [ChatMessageRepository.java](backend/src/main/java/com/myfcseoul/backend/repository/ChatMessageRepository.java)
+
+
 
 ---
 
