@@ -7,15 +7,16 @@
 ---
 
 ## 0. 목차
-> 1. 프로젝트 개요
-> 2. 사용 기술
-> 3. 아키텍처
-> 4. 화면 구성
-> 5. 주요 기능 설계
-> 6. 트러블 슈팅
+> 1.  [👨‍💻 프로젝트 개요](#sec-1-overview)
+> 2.  [⚒️ 사용 기술](#sec-2-tech)
+> 3.  [🌐 아키텍처](#sec-3-arch)
+> 4.  [🖥️ 화면 구성](#sec-4-ui)
+> 5.  [📌 주요 기능 설계](#sec-5-feature)
+> 6.  [⚠️ 트러블 슈팅](#sec-6-trouble)
 
 ---
 
+<a id="sec-1-overview"></a>
 ## 1. 👨‍💻 프로젝트 개요
 
 - 프로젝트명: myFCseoul
@@ -33,6 +34,7 @@
 
 <br>
 
+<a id="sec-2-tech"></a>
 ## 2. ⚒️ 사용 기술
 
 ### 2-1. Backend
@@ -48,6 +50,7 @@
 
 <br>
 
+<a id="sec-3-arch"></a>
 ## 3. 🌐 아키텍처
 
 ### 3-1. 시스템 아키텍처
@@ -129,6 +132,7 @@
 </details> 
 <br>
 
+<a id="sec-4-ui"></a>
 ## 4. 🖥️ 화면 구성
 ### 4-1. **로그인 화면**
 <img width="1453" height="736" alt="Image" src="https://github.com/user-attachments/assets/dcafbe68-7ae0-4b1d-bb9e-3315f33944e4" />
@@ -190,6 +194,7 @@ OpenAI API를 활용하여 하루 1회 텍스트 형태의 상세 예측 리포�
 ---
 <br>
 
+<a id="sec-5-feature"></a>
 ## 5. 📌 주요 기능 설계
 ### 5-1. **Kakao 소셜 로그인 (OAuth 2.0) 기능**
 <img width="805" height="440" alt="Image" src="https://github.com/user-attachments/assets/9bf370bb-22aa-4dff-8c1f-dbf28a55b0f7" />
@@ -823,12 +828,13 @@ Spring WebSocket + STOMP 기반의 실시간 통신으로 DM 방 생성, 저장,
 
 <br>
 
+<a id="sec-6-trouble"></a>
 ## 6. ⚠️ 트러블슈팅
 
 ### 6-1. EC2 1GB RAM 환경에서 메모리 부족으로 인한 서버 다운 & Swap 도입
 
 - **상황**
-    <img width="1246" height="272" alt="Image" src="https://github.com/user-attachments/assets/14b7e738-7781-4677-a4d9-b569e8585cdb" />
+  <img width="1010" height="297" alt="Image" src="https://github.com/user-attachments/assets/dd47e9a4-0a39-4387-b264-f4e282354eef" />
     <br>
     - AWS EC2 프리티어 수준의 인스턴스를 사용했는데, 제공되는 RAM 이 **1GB뿐인 환경**에서
       해당 프로젝트를 올려두고 운영하고 있었음
@@ -876,7 +882,7 @@ Spring WebSocket + STOMP 기반의 실시간 통신으로 DM 방 생성, 저장,
       **스왑 파일 생성 → 권한 설정 → 스왑 초기화 → 스왑 활성화 → 부팅 시 자동 활성화** 순서로 작업을 진행함
 
 - **결과**
-  <img width="1010" height="297" alt="Image" src="https://github.com/user-attachments/assets/dd47e9a4-0a39-4387-b264-f4e282354eef" />
+  <img width="1246" height="272" alt="Image" src="https://github.com/user-attachments/assets/14b7e738-7781-4677-a4d9-b569e8585cdb" />
   <br>
   - `free -h` 명령을 통해 **2GB 크기의 Swap 공간이 정상적으로 잡힌 것**을 확인
     - 메모리가 부족해지는 구간에서도:
