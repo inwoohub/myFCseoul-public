@@ -461,7 +461,7 @@ OpenAI API를 활용하여 하루 1회 텍스트 형태의 상세 예측 리포�
 
 ---
 
-### 5-5. **AI 경기 예측 기능**
+### 5-4. **AI 경기 예측 기능**
 <img width="922" height="487" alt="Image" src="https://github.com/user-attachments/assets/675e4e4d-0f57-4fe2-9463-3ee9a4732a85" />
 <br>
 사용자의 직관 기록(승/무/패), K리그 공식 사이트에서 스크래핑한 현재 순위 및 최근 5경기 폼
@@ -582,7 +582,7 @@ OpenAI API를 활용하여 하루 1회 텍스트 형태의 상세 예측 리포�
 
 ---
 
-### 5-4. **채팅 기능**
+### 5-5. **채팅 기능**
 
 <img width="841" height="155" alt="Image" src="https://github.com/user-attachments/assets/fb8501b5-40c1-4201-94b6-e0df9db97dad" />
 
