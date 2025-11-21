@@ -292,7 +292,7 @@ OpenAI API를 활용하여 하루 1회 텍스트 형태의 상세 예측 리포�
 
 ---
 
-### 5-2. **랭킹 기능**
+### 5-3. **랭킹 기능**
 <img width="874" height="329" alt="Image" src="https://github.com/user-attachments/assets/3bc99b20-3aed-4456-8ed0-166601ff50c9" />
 <br>
 직관 기록과 경기 결과를 기반으로 랭킹을 계산하여 메인 페이지에 제공하는 기능입니다. 랭킹 계산은 한 번만 수행하고, 그 결과를 서버 메모리 캐시에 저장해 빠르게 조회할 수 있도록 설계했습니다.
@@ -461,7 +461,7 @@ OpenAI API를 활용하여 하루 1회 텍스트 형태의 상세 예측 리포�
 
 ---
 
-### 5-3. **AI 경기 예측 기능**
+### 5-5. **AI 경기 예측 기능**
 <img width="922" height="487" alt="Image" src="https://github.com/user-attachments/assets/675e4e4d-0f57-4fe2-9463-3ee9a4732a85" />
 <br>
 사용자의 직관 기록(승/무/패), K리그 공식 사이트에서 스크래핑한 현재 순위 및 최근 5경기 폼
@@ -751,7 +751,7 @@ Spring WebSocket + STOMP 기반의 실시간 통신으로 DM 방 생성, 저장,
 
 ---
 
-### 5-5. **다이어리 기능**
+### 5-6. **다이어리 기능**
 <img width="750" height="296" alt="Image" src="https://github.com/user-attachments/assets/c80bd3fa-5281-4071-90a8-a0c018fd8b9d" />
 <br>
 경기 직관 후 느낀 점과 사진을 다이어리 형태로 기록하고<br>
